@@ -7,4 +7,10 @@ describe('<HomeScreen />', () => {
     const { getByText } = await render(<HomeScreen />);
     getByText('Biblia');
   });
+
+  test('renders the book list', async () => {
+    const { getByText } = await render(<HomeScreen />);
+    getByText('Génesis');
+    getByText('Éxodo');
+  });
 });
