@@ -1,7 +1,6 @@
 import { useState } from 'react';
-import { Pressable, SectionList, Text, View } from 'react-native';
+import { FlatList, Pressable, Text, View } from 'react-native';
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { BOOKS, chapterCount } from '@/lib/bible';
@@ -9,48 +8,51 @@ import { BOOKS, chapterCount } from '@/lib/bible';
 const OLD_TESTAMENT = BOOKS.slice(0, 39).map((title, index) => ({ title, index }));
 const NEW_TESTAMENT = BOOKS.slice(39).map((title, index) => ({ title, index: index + 39 }));
 
-const SECTIONS = [
-  { key: 'old', title: 'Antiguo Testamento', data: OLD_TESTAMENT },
-  { key: 'new', title: 'Nuevo Testamento', data: NEW_TESTAMENT },
-];
+const TESTAMENTS = [
+  { key: 'old', label: 'Antiguo Testamento' },
+  { key: 'new', label: 'Nuevo Testamento' },
+] as const;
+
+type TestamentKey = (typeof TESTAMENTS)[number]['key'];
 
 export default function HomeScreen() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+  const [testamentKey, setTestamentKey] = useState<TestamentKey>('old');
 
-  const sections = SECTIONS.map((section) => ({
-    ...section,
-    data: expanded[section.key] ? section.data : [],
-  }));
+  const books = testamentKey === 'old' ? OLD_TESTAMENT : NEW_TESTAMENT;
 
   return (
     <View className="flex-1 bg-white dark:bg-black" style={{ paddingTop: insets.top }}>
-      <Text className="px-4 pb-2 pt-6 text-4xl font-bold text-slate-900 dark:text-slate-100">
+      <Text className="px-4 pb-3 pt-6 text-4xl font-bold text-slate-900 dark:text-slate-100">
         Biblia
       </Text>
-      <SectionList
-        sections={sections}
-        keyExtractor={(item) => String(item.index)}
-        contentContainerClassName="px-4 pb-6"
-        stickySectionHeadersEnabled={false}
-        ItemSeparatorComponent={() => <View className="h-2" />}
-        renderSectionHeader={({ section }) => {
-          const open = Boolean(expanded[section.key]);
+      <View className="flex-row gap-2 px-4 pb-4">
+        {TESTAMENTS.map(({ key, label }) => {
+          const active = key === testamentKey;
 
           return (
             <Pressable
-              className="mb-2 mt-2 flex-row items-center justify-between px-1 py-2"
-              onPress={() =>
-                setExpanded((prev) => ({ ...prev, [section.key]: !prev[section.key] }))
-              }>
-              <Text className="text-base font-semibold text-slate-600 dark:text-slate-300">
-                {section.title}
+              key={key}
+              onPress={() => setTestamentKey(key)}
+              className={`flex-1 items-center rounded-full px-3 py-2 ${
+                active ? 'bg-blue-200 dark:bg-blue-900' : 'bg-slate-100 dark:bg-slate-800'
+              }`}>
+              <Text
+                className={`text-center text-sm font-semibold ${
+                  active ? 'text-blue-900 dark:text-blue-100' : 'text-slate-600 dark:text-slate-300'
+                }`}>
+                {label}
               </Text>
-              <Ionicons name={open ? 'chevron-up' : 'chevron-down'} size={20} color="#64748b" />
             </Pressable>
           );
-        }}
+        })}
+      </View>
+      <FlatList
+        key={testamentKey}
+        data={books}
+        keyExtractor={(item) => String(item.index)}
+        contentContainerClassName="gap-2 px-4 pb-6"
         renderItem={({ item }) => {
           const count = chapterCount(item.index);
 
