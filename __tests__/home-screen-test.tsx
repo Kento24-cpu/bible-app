@@ -5,7 +5,7 @@ import HomeScreen from '../app/(tabs)/index';
 describe('<HomeScreen />', () => {
   test('renders the app title', async () => {
     const { getByText } = await render(<HomeScreen />);
-    getByText('Libros');
+    getByText('Biblia');
   });
 
   test('renders the book list', async () => {
