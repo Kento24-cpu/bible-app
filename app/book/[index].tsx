@@ -54,6 +54,26 @@ export default function BookScreen() {
         <Text className="mt-1 text-base text-slate-600 dark:text-slate-400">
           Elige un capítulo
         </Text>
+        {position ? (
+          <Pressable
+            className="mt-4 rounded-2xl bg-blue-100 px-4 py-3 dark:bg-blue-950"
+            onPress={() =>
+              router.push({
+                pathname: '/chapter/[index]/[chapter]',
+                params: {
+                  index: String(position.bookIndex),
+                  chapter: String(position.chapter),
+                },
+              })
+            }>
+            <Text className="text-base font-semibold text-slate-900 dark:text-slate-100">
+              Continuar leyendo
+            </Text>
+            <Text className="mt-0.5 text-sm text-slate-600 dark:text-slate-300">
+              {`${BOOKS[position.bookIndex]} ${position.chapter}:${position.verse}`}
+            </Text>
+          </Pressable>
+        ) : null}
       </View>
       <FlatList
         data={chapters}
@@ -85,28 +105,6 @@ export default function BookScreen() {
             </Pressable>
           );
         }}
-        ListFooterComponent={
-          position ? (
-            <Pressable
-              className="mt-4 rounded-2xl bg-blue-100 px-4 py-3 dark:bg-blue-950"
-              onPress={() =>
-                router.push({
-                  pathname: '/chapter/[index]/[chapter]',
-                  params: {
-                    index: String(position.bookIndex),
-                    chapter: String(position.chapter),
-                  },
-                })
-              }>
-              <Text className="text-base font-semibold text-slate-900 dark:text-slate-100">
-                Continuar leyendo
-              </Text>
-              <Text className="mt-0.5 text-sm text-slate-600 dark:text-slate-300">
-                {`${BOOKS[position.bookIndex]} ${position.chapter}:${position.verse}`}
-              </Text>
-            </Pressable>
-          ) : undefined
-        }
       />
     </View>
   );
