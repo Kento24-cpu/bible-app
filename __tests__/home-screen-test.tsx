@@ -8,22 +8,21 @@ describe('<HomeScreen />', () => {
     getByText('Biblia');
   });
 
-  test('expands the Old Testament books', async () => {
+  test('shows the Old Testament by default', async () => {
     const { getByText, queryByText } = await render(<HomeScreen />);
 
-    expect(queryByText('Génesis')).toBeNull();
-
-    fireEvent.press(getByText('Antiguo Testamento'));
-    await waitFor(() => getByText('Génesis'));
+    getByText('Génesis');
     getByText('Éxodo');
+    expect(queryByText('San Mateo')).toBeNull();
   });
 
-  test('expands the New Testament books', async () => {
+  test('switches to the New Testament', async () => {
     const { getByText, queryByText } = await render(<HomeScreen />);
 
     expect(queryByText('San Mateo')).toBeNull();
 
     fireEvent.press(getByText('Nuevo Testamento'));
     await waitFor(() => getByText('San Mateo'));
+    expect(queryByText('Génesis')).toBeNull();
   });
 });
