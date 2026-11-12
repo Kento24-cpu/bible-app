@@ -6,8 +6,9 @@ import ChapterScreen from '../app/chapter/[index]/[chapter]';
 let mockParams: Record<string, string> = {};
 
 jest.mock('expo-router', () => ({
-  useRouter: () => ({ push: jest.fn(), replace: jest.fn() }),
+  useRouter: () => ({ push: jest.fn(), replace: jest.fn(), back: jest.fn() }),
   useLocalSearchParams: () => mockParams,
+  useFocusEffect: () => {},
   Stack: { Screen: () => null },
 }));
 
