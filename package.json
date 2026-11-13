@@ -40,7 +40,8 @@
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "test": "NODE_ENV=test jest"
+    "test": "NODE_ENV=test jest",
+    "release": "node scripts/release.mjs"
   },
   "jest": {
     "preset": "jest-expo",
