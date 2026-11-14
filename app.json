@@ -7,6 +7,12 @@
     "icon": "./assets/images/icon.png",
     "scheme": "bibleapp",
     "userInterfaceStyle": "automatic",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/09edc63d-1e2e-4333-925b-06ff80f2d84d"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.bibleproject.bibleapp",
