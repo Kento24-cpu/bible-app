@@ -36,11 +36,11 @@ export default function HomeScreen() {
               key={key}
               onPress={() => setTestamentKey(key)}
               className={`flex-1 items-center rounded-full px-3 py-2 ${
-                active ? 'bg-blue-200 dark:bg-blue-900' : 'bg-slate-100 dark:bg-slate-800'
+                active ? 'bg-blue-600' : 'bg-slate-100 dark:bg-slate-800'
               }`}>
               <Text
                 className={`text-center text-sm font-semibold ${
-                  active ? 'text-blue-900 dark:text-blue-100' : 'text-slate-600 dark:text-slate-300'
+                  active ? 'text-white' : 'text-slate-600 dark:text-slate-300'
                 }`}>
                 {label}
               </Text>
