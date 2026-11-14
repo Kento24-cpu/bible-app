@@ -84,11 +84,16 @@ export default function ChapterScreen() {
           return (
             <Pressable
               onPress={() => selectVerse(verse)}
-              className={`rounded-2xl px-3 py-2 ${
-                selected ? 'bg-yellow-100 dark:bg-yellow-900' : ''
-              }`}>
-              <Text className="text-base leading-7 text-slate-800 dark:text-slate-200">
-                <Text className="font-semibold text-slate-900 dark:text-slate-100">
+              style={selected ? { backgroundColor: '#659DF2' } : undefined}
+              className="rounded-2xl px-3 py-2">
+              <Text
+                className={`text-base leading-7 ${
+                  selected ? 'text-white' : 'text-slate-800 dark:text-slate-200'
+                }`}>
+                <Text
+                  className={`font-semibold ${
+                    selected ? 'text-white' : 'text-slate-900 dark:text-slate-100'
+                  }`}>
                   {verse}{' '}
                 </Text>
                 {item}
