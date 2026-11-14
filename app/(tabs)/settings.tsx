@@ -1,23 +1,13 @@
-import { Alert, Pressable, Switch, Text, View } from 'react-native';
+import { Alert, Pressable, Text, View } from 'react-native';
 import Constants from 'expo-constants';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { Download, Info, Moon } from 'lucide-react-native';
-import { Uniwind, useUniwind } from 'uniwind';
-
-import { saveThemePreference } from '@/lib/theme-preference';
+import { Download, Info } from 'lucide-react-native';
 
 const ICON_COLOR = '#64748b';
 
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
-  const { theme } = useUniwind();
   const version = Constants.expoConfig?.version ?? '1.0.0';
-
-  const setDarkMode = (enabled: boolean) => {
-    const next = enabled ? 'dark' : 'light';
-    Uniwind.setTheme(next);
-    void saveThemePreference(next).catch(() => {});
-  };
 
   return (
     <View className="flex-1 bg-white dark:bg-black" style={{ paddingTop: insets.top }}>
@@ -40,17 +30,6 @@ export default function SettingsScreen() {
             Buscar actualizaciones
           </Text>
         </Pressable>
-        <View className="flex-row items-center rounded-2xl bg-slate-100 px-4 py-3 dark:bg-slate-800">
-          <Moon size={20} color={ICON_COLOR} />
-          <Text className="ml-3 flex-1 text-base text-slate-900 dark:text-slate-100">
-            Modo oscuro
-          </Text>
-          <Switch
-            value={theme === 'dark'}
-            onValueChange={setDarkMode}
-            trackColor={{ false: '#cbd5e1', true: '#3b82f6' }}
-          />
-        </View>
       </View>
     </View>
   );
