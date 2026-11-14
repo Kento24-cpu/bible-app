@@ -44,4 +44,4 @@ writeFileSync(appPath, `${JSON.stringify(app, null, 2)}\n`)
 
 if (noBuild) process.exit(0)
 
-run('npx', ['--yes', 'eas-cli@27', 'build', '--platform', platform, '--profile', 'production'])
+run('npx', ['--yes', 'eas-cli@27', 'build', '--platform', platform, '--profile', 'preview'])
