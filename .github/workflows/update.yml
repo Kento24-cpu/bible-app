@@ -1,0 +1,39 @@
+name: OTA update
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'app/**'
+      - 'lib/**'
+      - 'assets/**'
+      - 'global.css'
+      - 'app.json'
+      - 'package.json'
+      - 'package-lock.json'
+
+concurrency:
+  group: ota-update
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      - run: npx tsc --noEmit
+
+      - name: Publish OTA update to preview channel
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: npx --yes eas-cli@27 update --channel preview --environment preview --message "$GITHUB_SHA" --non-interactive
