@@ -38,11 +38,11 @@ jobs:
             exit 1
           fi
 
-      - name: Build preview APK
+      - name: Build production APK
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: |
-          npx --yes eas-cli@27 build --platform android --profile preview --non-interactive --wait --json > build.json
+          npx --yes eas-cli@27 build --platform android --profile production --non-interactive --wait --json > build.json
           node -e "const [b] = require('./build.json'); console.log('EAS build:', b.artifacts.buildUrl)"
 
       - name: Download APK
