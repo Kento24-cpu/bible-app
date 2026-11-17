@@ -33,7 +33,7 @@ jobs:
 
       - run: npm ci
 
-      - name: Publish OTA update to preview channel
+      - name: Publish OTA update to production channel
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
-        run: npx --yes eas-cli@27 update --channel preview --environment preview --message "$GITHUB_SHA" --non-interactive
+        run: npx --yes eas-cli@27 update --channel production --environment production --message "$GITHUB_SHA" --non-interactive
