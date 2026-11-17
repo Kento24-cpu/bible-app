@@ -60,6 +60,8 @@ jobs:
     if: startsWith(github.ref, 'refs/tags/v')
     needs: build
     runs-on: ubuntu-latest
+    env:
+      LANDING_SYNC_TOKEN: ${{ secrets.LANDING_SYNC_TOKEN }}
     steps:
       - uses: actions/download-artifact@v4
         with:
@@ -69,3 +71,13 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: gh release create "$GITHUB_REF_NAME" ./*.apk --title "$GITHUB_REF_NAME" --generate-notes
+
+      - name: Sync landing page
+        if: env.LANDING_SYNC_TOKEN != ''
+        run: |
+          curl -fsSL -X POST \
+            -H "Authorization: Bearer $LANDING_SYNC_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "Content-Type: application/json" \
+            -d "{\"event_type\":\"app-release\",\"client_payload\":{\"version\":\"${GITHUB_REF_NAME#v}\"}}" \
+            "$GITHUB_API_URL/repos/Kento24-cpu/bible-landing/dispatches"
