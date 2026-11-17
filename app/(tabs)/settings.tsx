@@ -23,13 +23,10 @@ export default function SettingsScreen() {
     try {
       const update = await Updates.checkForUpdateAsync();
 
-      if (!update.isAvailable) {
-        Alert.alert('Actualizaciones', 'Ya tienes la última versión.');
-        return;
-      }
+      if (!update.isAvailable) return;
 
       await Updates.fetchUpdateAsync();
-      Alert.alert('Actualización lista', 'Cierra y vuelve a abrir la app para aplicarla.');
+      await Updates.reloadAsync();
     } catch {
       Alert.alert('Actualizaciones', 'No se pudo buscar la actualización. Inténtalo de nuevo.');
     } finally {

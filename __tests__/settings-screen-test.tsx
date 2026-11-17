@@ -8,6 +8,7 @@ jest.mock('expo-updates', () => ({
   isEnabled: true,
   checkForUpdateAsync: jest.fn(),
   fetchUpdateAsync: jest.fn(),
+  reloadAsync: jest.fn(),
 }));
 
 jest.mock('expo-constants', () => ({
@@ -22,6 +23,7 @@ jest.mock('lucide-react-native', () => ({
 
 const mockCheckForUpdateAsync = jest.mocked(Updates.checkForUpdateAsync);
 const mockFetchUpdateAsync = jest.mocked(Updates.fetchUpdateAsync);
+const mockReloadAsync = jest.mocked(Updates.reloadAsync);
 const alertSpy = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
 
 beforeEach(() => {
@@ -34,7 +36,7 @@ describe('<SettingsScreen />', () => {
     getByText('1.2.3');
   });
 
-  test('reports when there are no updates', async () => {
+  test('stays silent when there are no updates', async () => {
     mockCheckForUpdateAsync.mockResolvedValue({ isAvailable: false } as never);
 
     const { getByText } = await render(<SettingsScreen />);
@@ -42,26 +44,24 @@ describe('<SettingsScreen />', () => {
       fireEvent.press(getByText('Buscar actualizaciones'));
     });
 
-    await waitFor(() =>
-      expect(alertSpy).toHaveBeenCalledWith('Actualizaciones', 'Ya tienes la última versión.')
-    );
+    await waitFor(() => expect(mockCheckForUpdateAsync).toHaveBeenCalled());
+    expect(alertSpy).not.toHaveBeenCalled();
+    expect(mockFetchUpdateAsync).not.toHaveBeenCalled();
+    expect(mockReloadAsync).not.toHaveBeenCalled();
   });
 
-  test('downloads an available update and asks to restart', async () => {
+  test('downloads an available update and reloads the app', async () => {
     mockCheckForUpdateAsync.mockResolvedValue({ isAvailable: true } as never);
     mockFetchUpdateAsync.mockResolvedValue({ isNew: true } as never);
+    mockReloadAsync.mockResolvedValue(undefined as never);
 
     const { getByText } = await render(<SettingsScreen />);
     await act(async () => {
       fireEvent.press(getByText('Buscar actualizaciones'));
     });
 
-    await waitFor(() =>
-      expect(alertSpy).toHaveBeenCalledWith(
-        'Actualización lista',
-        'Cierra y vuelve a abrir la app para aplicarla.'
-      )
-    );
+    await waitFor(() => expect(mockReloadAsync).toHaveBeenCalled());
     expect(mockFetchUpdateAsync).toHaveBeenCalled();
+    expect(alertSpy).not.toHaveBeenCalled();
   });
 });
