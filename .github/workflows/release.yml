@@ -13,7 +13,11 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  quality:
+    uses: ./.github/workflows/ci.yml
+
   build:
+    needs: quality
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -33,10 +37,6 @@ jobs:
             echo "app.json version ($version) does not match tag ($GITHUB_REF_NAME)"
             exit 1
           fi
-
-      - run: npm test
-
-      - run: npx tsc --noEmit
 
       - name: Build preview APK
         env:
