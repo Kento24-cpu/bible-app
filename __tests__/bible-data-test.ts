@@ -1,4 +1,9 @@
+import raw from '../assets/bible/spa-rv1909.json';
 import { BOOKS, chapterCount, getVerses } from '../lib/bible';
+
+const texts = raw.books.flatMap((book) =>
+  book.chapters.flatMap((chapter) => chapter.verses.map((verse) => verse.text))
+);
 
 describe('bible data', () => {
   test('has the 66 books in canonical order', () => {
@@ -34,5 +39,14 @@ describe('bible data', () => {
   test('out of range returns empty', () => {
     expect(getVerses(999, 1)).toEqual([]);
     expect(chapterCount(-1)).toBe(0);
+  });
+
+  test('keeps every verse slot of the canon', () => {
+    expect(texts).toHaveLength(31102);
+  });
+
+  test('has no printer colophons glued to the last verse of a book', () => {
+    const colophon = /Amén\.\s+(La (primera|segunda)|Fu[eé] escrita|Enviada de|Escrita de|A (Tito|Filemón))/;
+    expect(texts.filter((text) => colophon.test(text))).toEqual([]);
   });
 });
