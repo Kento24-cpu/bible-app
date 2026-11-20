@@ -20,7 +20,7 @@ function isValid(value: unknown): value is ReadingPosition {
     chapter <= chapterCount(bookIndex) &&
     Number.isInteger(verse) &&
     verse >= 1 &&
-    verse <= getVerses(bookIndex, chapter).length
+    getVerses(bookIndex, chapter).some((entry) => entry.verse === verse)
   );
 }
 

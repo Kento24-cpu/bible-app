@@ -75,15 +75,14 @@ export default function ChapterScreen() {
       </Text>
       <FlatList
         data={verses}
-        keyExtractor={(_verse, verseIndex) => String(verseIndex)}
+        keyExtractor={(verse) => String(verse.verse)}
         contentContainerClassName="gap-1 px-3 pb-6"
-        renderItem={({ item, index: verseIndex }) => {
-          const verse = verseIndex + 1;
-          const selected = verse === selectedVerse;
+        renderItem={({ item }) => {
+          const selected = item.verse === selectedVerse;
 
           return (
             <Pressable
-              onPress={() => selectVerse(verse)}
+              onPress={() => selectVerse(item.verse)}
               style={selected ? { backgroundColor: '#659DF2' } : undefined}
               className="rounded-2xl px-3 py-2">
               <Text
@@ -94,9 +93,9 @@ export default function ChapterScreen() {
                   className={`font-semibold ${
                     selected ? 'text-white' : 'text-slate-900 dark:text-slate-100'
                   }`}>
-                  {verse}{' '}
+                  {item.verse}{' '}
                 </Text>
-                {item}
+                {item.text}
               </Text>
             </Pressable>
           );

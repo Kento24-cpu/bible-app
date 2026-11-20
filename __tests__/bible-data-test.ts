@@ -17,7 +17,14 @@ describe('bible data', () => {
   test('John 3:16', () => {
     const verses = getVerses(42, 3);
     expect(verses).toHaveLength(36);
-    expect(verses[15]).toContain('amó Dios al mundo');
+    expect(verses[15].text).toContain('amó Dios al mundo');
+    expect(verses[15].verse).toBe(16);
+  });
+
+  test('skips empty slots and keeps the real verse numbers', () => {
+    const job38 = getVerses(17, 38);
+    expect(job38.filter((verse) => !verse.text)).toEqual([]);
+    expect(job38.at(-1)?.verse).toBe(38);
   });
 
   test('Psalm 119 has 176 verses', () => {

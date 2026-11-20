@@ -86,7 +86,10 @@ export function chapterCount(bookIndex: number): number {
   return books[bookIndex]?.chapters.length ?? 0;
 }
 
-export function getVerses(bookIndex: number, chapter: number): string[] {
+export type Verse = { verse: number; text: string };
+
+// Empty slots exist where the 1909 division and the modern verse numbering disagree.
+export function getVerses(bookIndex: number, chapter: number): Verse[] {
   const verses = books[bookIndex]?.chapters[chapter - 1]?.verses;
-  return verses ? verses.map((verse) => verse.text) : [];
+  return verses ? verses.filter((verse) => verse.text.trim() !== '') : [];
 }
