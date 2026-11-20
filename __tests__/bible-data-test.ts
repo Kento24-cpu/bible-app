@@ -49,4 +49,19 @@ describe('bible data', () => {
     const colophon = /Amén\.\s+(La (primera|segunda)|Fu[eé] escrita|Enviada de|Escrita de|A (Tito|Filemón))/;
     expect(texts.filter((text) => colophon.test(text))).toEqual([]);
   });
+
+  test('uses modern spanish orthography', () => {
+    const obsolete = ['á', 'é', 'ó', 'fué', 'fuése', 'dió', 'vió', 'fuí', 'dí', 'ví', 'díjo', 'hé', 'pára', 'piés'];
+    const hits = texts.flatMap((text) =>
+      text.split(/[^\p{L}]+/u).filter((token) => obsolete.includes(token))
+    );
+    expect(hits).toEqual([]);
+  });
+
+  test('keeps the wording of the 1909 text untouched', () => {
+    expect(getVerses(18, 23)[2]).toEqual({
+      verse: 3,
+      text: 'Confortará mi alma; guiaráme por sendas de justicia por amor de su nombre.',
+    });
+  });
 });
