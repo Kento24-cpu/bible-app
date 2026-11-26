@@ -1,5 +1,11 @@
-import raw from '../assets/bible/spa-rv1909.json';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+
 import { BOOKS, chapterCount, getVerses } from '../lib/bible';
+
+const raw = JSON.parse(
+  readFileSync(join(__dirname, '../assets/bible/spa-rv1909.bible'), 'utf8')
+) as { books: { chapters: { verses: { text: string }[] }[] }[] };
 
 const texts = raw.books.flatMap((book) =>
   book.chapters.flatMap((chapter) => chapter.verses.map((verse) => verse.text))

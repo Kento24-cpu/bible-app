@@ -1,4 +1,6 @@
-import raw from '@/assets/bible/spa-rv1909.json';
+import { Platform } from 'react-native';
+import { Asset } from 'expo-asset';
+import { File } from 'expo-file-system';
 
 type BibleData = {
   translation: string;
@@ -11,7 +13,21 @@ type BibleData = {
   }[];
 };
 
-const books: BibleData['books'] = raw.books;
+// The text is an asset file, not a module, so a code-only OTA update does not
+// re-ship the 4.5 MB of verses inside the JS bundle.
+let books: BibleData['books'] | null = null;
+
+export async function loadBible(): Promise<void> {
+  if (books) return;
+
+  const [asset] = await Asset.loadAsync(require('@/assets/bible/spa-rv1909.bible'));
+  const uri = asset.localUri ?? asset.uri;
+  // expo-file-system has no web implementation, where the asset is served over HTTP.
+  const text =
+    Platform.OS === 'web' ? await (await fetch(uri)).text() : await new File(uri).text();
+
+  books = (JSON.parse(text) as BibleData).books;
+}
 
 export const BOOKS = [
   'Génesis',
@@ -83,13 +99,13 @@ export const BOOKS = [
 ];
 
 export function chapterCount(bookIndex: number): number {
-  return books[bookIndex]?.chapters.length ?? 0;
+  return books?.[bookIndex]?.chapters.length ?? 0;
 }
 
 export type Verse = { verse: number; text: string };
 
 // Empty slots exist where the 1909 division and the modern verse numbering disagree.
 export function getVerses(bookIndex: number, chapter: number): Verse[] {
-  const verses = books[bookIndex]?.chapters[chapter - 1]?.verses;
+  const verses = books?.[bookIndex]?.chapters[chapter - 1]?.verses;
   return verses ? verses.filter((verse) => verse.text.trim() !== '') : [];
 }
