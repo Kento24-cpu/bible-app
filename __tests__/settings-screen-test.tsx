@@ -36,7 +36,7 @@ describe('<SettingsScreen />', () => {
     getByText('1.2.3');
   });
 
-  test('stays silent when there are no updates', async () => {
+  test('says it is up to date when there are no updates', async () => {
     mockCheckForUpdateAsync.mockResolvedValue({ isAvailable: false } as never);
 
     const { getByText } = await render(<SettingsScreen />);
@@ -44,7 +44,7 @@ describe('<SettingsScreen />', () => {
       fireEvent.press(getByText('Buscar actualizaciones'));
     });
 
-    await waitFor(() => expect(mockCheckForUpdateAsync).toHaveBeenCalled());
+    await waitFor(() => expect(getByText('Ya estás al día')).toBeTruthy());
     expect(alertSpy).not.toHaveBeenCalled();
     expect(mockFetchUpdateAsync).not.toHaveBeenCalled();
     expect(mockReloadAsync).not.toHaveBeenCalled();

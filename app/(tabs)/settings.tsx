@@ -11,6 +11,7 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const version = Constants.expoConfig?.version ?? '1.0.0';
   const [checking, setChecking] = useState(false);
+  const [upToDate, setUpToDate] = useState(false);
 
   const checkForUpdates = async () => {
     if (!Updates.isEnabled) {
@@ -23,7 +24,10 @@ export default function SettingsScreen() {
     try {
       const update = await Updates.checkForUpdateAsync();
 
-      if (!update.isAvailable) return;
+      if (!update.isAvailable) {
+        setUpToDate(true);
+        return;
+      }
 
       await Updates.fetchUpdateAsync();
       await Updates.reloadAsync();
@@ -55,7 +59,7 @@ export default function SettingsScreen() {
           onPress={checkForUpdates}>
           <Download size={20} color="#1d4ed8" />
           <Text className="ml-2 text-base font-semibold text-blue-700 dark:text-blue-300">
-            {checking ? 'Buscando...' : 'Buscar actualizaciones'}
+            {checking ? 'Buscando...' : upToDate ? 'Ya estás al día' : 'Buscar actualizaciones'}
           </Text>
         </Pressable>
       </View>
