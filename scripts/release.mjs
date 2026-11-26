@@ -6,9 +6,14 @@ const USAGE =
   'usage: npm run release [patch|minor|major] [--platform=android|ios|all] [--no-build] [--dry-run]'
 
 const [type = 'patch', ...flags] = process.argv.slice(2)
-const dryRun = flags.includes('--dry-run')
-const noBuild = flags.includes('--no-build')
-const platform = flags.find((flag) => flag.startsWith('--platform='))?.split('=')[1] ?? 'android'
+// npm eats flags passed without `--` and re-exposes them as npm_config_* env vars.
+const envFlag = (name) => process.env[`npm_config_${name}`] !== undefined
+const dryRun = flags.includes('--dry-run') || envFlag('dry_run')
+const noBuild = flags.includes('--no-build') || envFlag('build')
+const platform =
+  flags.find((flag) => flag.startsWith('--platform='))?.split('=')[1] ??
+  process.env.npm_config_platform ??
+  'android'
 
 if (!['patch', 'minor', 'major'].includes(type)) {
   console.error(USAGE)
