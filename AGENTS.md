@@ -6,7 +6,7 @@ Guidance for AI agents working in this repository.
 
 Expo SDK 58 app: React Native + expo-router + uniwind (Tailwind v4). UI language: Spanish.
 
-- `lib/bible.ts` — book index (66 books), `chapterCount`, `getVerses`. Reads `assets/bible/spa-rv1909.json` (Reina-Valera 1909, public domain, credited in `assets/bible/CREDITS.md`).
+- `lib/bible.ts` — book index (66 books), `chapterCount`, `getVerses`. `loadBible()` reads `assets/bible/spa-rv1909.bible` (Reina-Valera 1909, public domain, credited in `assets/bible/CREDITS.md`); the root layout awaits it before the first screen renders.
 - Routes: `app/(tabs)/index.tsx` (book list), `app/book/[index].tsx` (chapter grid), `app/chapter/[index]/[chapter].tsx` (reading screen).
 - Alias `@/*` → project root (resolves in Metro and in Jest via jest-expo tsconfig mapping).
 - Screens validate route params at the boundary (`Number()` + integer/range checks); invalid input renders nothing. Keep it that way.
@@ -31,4 +31,4 @@ Expo SDK 58 app: React Native + expo-router + uniwind (Tailwind v4). UI language
 - A `router.push({ pathname: '/new/route' })` fails typecheck until the route file exists *and* `expo start` has run once.
 - FlatList renders roughly the first 10 items under test. Assert on early items, not the last one.
 - Text split across JSX children (`{a} / {b}`) does not match `getByText('a / b')`. Use a single template string.
-- The Android bundle embeds the full Bible text (~12 MB Hermes bytecode). Do not add a second copy of the data.
+- The Bible text ships as an asset file (`assets/bible/spa-rv1909.bible`, 4.5 MB), registered through `resolver.assetExts` in `metro.config.js`. Never `import` it as a JSON module: that inlines ~8 MB of verses into the JS bundle and doubles the size of every OTA update (1.7 MB gzip with the asset, 3.5 MB without). Do not add a second copy of the data.

@@ -1,4 +1,4 @@
-# spa-rv1909.json
+# spa-rv1909.bible
 
 - Text: Santa Biblia — Reina Valera 1909 (`SpaRV`)
 - License of the text: public domain (1909 translation)
